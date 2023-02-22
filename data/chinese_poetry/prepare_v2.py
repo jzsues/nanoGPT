@@ -11,9 +11,9 @@ input_file_path = os.path.join(os.path.dirname(__file__), 'test_chinese_poetry_v
 
 def read_raw_file_lines(raw_data_path):
     with open(raw_data_path, 'r', encoding='utf-8') as f:
-        print('reading lines')
+        print(f'reading lines and add special tokens:[MASK] text [SEP] [CLS] ')
         rlines = f.readlines()
-        rlines = [line.replace('\n', '') for line in rlines]
+        rlines = ['[MASK] ' + line.replace('\n', ' [SEP] ') + ' [CLS] ' for line in rlines]
     rlines_len = len(rlines)
     return rlines, rlines_len
 
@@ -34,23 +34,17 @@ from tokenizations import tokenization_bert
 vocab_file_path = os.path.join(os.path.dirname(__file__), '../../cache/vocab_all.txt')
 tokenizer = tokenization_bert.BertTokenizer(vocab_file=vocab_file_path)
 tokenizer.max_len = 999999
-train_sublines = [tokenizer.tokenize(line) for line in train_lines if len(line) > min_length]
-val_sublines = [tokenizer.tokenize(line) for line in val_lines if len(line) > min_length]
-train_sublines = [tokenizer.convert_tokens_to_ids(line) for line in train_sublines]
-val_sublines = [tokenizer.convert_tokens_to_ids(line) for line in val_sublines]
+train_tokens = [tokenizer.tokenize(line) for line in train_lines if len(line) > min_length]
+val_tokens = [tokenizer.tokenize(line) for line in val_lines if len(line) > min_length]
+train_token_ids = [tokenizer.convert_tokens_to_ids(line) for line in train_tokens]
+val_token_ids = [tokenizer.convert_tokens_to_ids(line) for line in val_tokens]
 train_ids = []
 val_ids = []
-for subline in train_sublines:
-    train_ids.append(tokenizer.convert_tokens_to_ids('[MASK]'))  # 文章开头添加MASK表示文章开始
-    train_ids.extend(subline)
-    train_ids.append(tokenizer.convert_tokens_to_ids('[SEP]'))  # 文章结束添加SEP表示文章结束
-    train_ids.append(tokenizer.convert_tokens_to_ids('[CLS]'))  # 文章之间添加CLS表示文章结束
+for ids in train_token_ids:
+    train_ids.extend(ids)
 
-for subline in val_sublines:
-    val_ids.append(tokenizer.convert_tokens_to_ids('[MASK]'))  # 文章开头添加MASK表示文章开始
-    val_ids.extend(subline)
-    val_ids.append(tokenizer.convert_tokens_to_ids('[SEP]'))  # 文章结束添加SEP表示文章结束
-    val_ids.append(tokenizer.convert_tokens_to_ids('[CLS]'))  # 文章之间添加CLS表示文章结束
+for ids in val_token_ids:
+    val_ids.extend(ids)
 
 print(f"vocab size:{tokenizer.vocab_size}")
 print(f"train has {len(train_ids):,} tokens")
