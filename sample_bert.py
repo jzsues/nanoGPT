@@ -89,7 +89,7 @@ else:
 
     vocab_file_path = os.path.join(os.path.dirname(__file__), 'cache/vocab_all.txt')
     tokenizer = tokenization_bert.BertTokenizer(vocab_file=vocab_file_path)
-    encode = lambda s: [tokenizer.convert_tokens_to_ids('[MASK]')].extend(tokenizer.encode(s))
+    encode = lambda s: tokenizer.encode(s)
     decode = lambda s: tokenizer.decode(s)
 
 # encode the beginning of the prompt
