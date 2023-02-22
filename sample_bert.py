@@ -92,6 +92,7 @@ else:
     encode = lambda s: tokenizer.encode(s)
     decode = lambda s: tokenizer.decode(s)
 
+
 # encode the beginning of the prompt
 if start.startswith('FILE:'):
     with open(start[5:], 'r', encoding='utf-8') as f:

@@ -6,14 +6,14 @@ import pickle
 
 # download the test chinese poetry dataset
 
-input_file_path = os.path.join(os.path.dirname(__file__), 'test_chinese_poetry_v1.txt')
+input_file_path = os.path.join(os.path.dirname(__file__), 'test_chinese_poetry_v2.txt')
 
 
 def read_raw_file_lines(raw_data_path):
     with open(raw_data_path, 'r', encoding='utf-8') as f:
-        print(f'reading lines and add special tokens:[MASK] text [SEP] [CLS] ')
+        print(f'reading lines and add special tokens: [CLS] text [SEP] ')
         rlines = f.readlines()
-        rlines = ['[MASK] ' + line.replace('\n', ' [SEP] ') + ' [CLS] ' for line in rlines]
+        rlines = [' [CLS] ' + line.replace('\n', ' [SEP] ') for line in rlines]
     rlines_len = len(rlines)
     return rlines, rlines_len
 
