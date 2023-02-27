@@ -21,9 +21,11 @@ def read_raw_file_lines(raw_data_path):
 min_length = 16
 lines, lines_len = read_raw_file_lines(input_file_path)
 
+samp_lines = np.random.choice(lines, lines_len)
+
 split_pos = int(lines_len * 0.9)
-train_lines = lines[:split_pos]
-val_lines = lines[split_pos:]
+train_lines = samp_lines[:split_pos]
+val_lines = samp_lines[split_pos:]
 
 # encode with tiktoken gpt2 bpe
 # enc = tiktoken.get_encoding("gpt2")
